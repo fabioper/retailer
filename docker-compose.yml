@@ -2,9 +2,9 @@ services:
     database:
       image: postgres:10
       environment:
-          POSTGRES_DB: "pdv-db"
-          POSTGRES_USER: "pdv-user"
-          POSTGRES_PASSWORD: "pdv-password"
+          POSTGRES_DB: "retailer-db"
+          POSTGRES_USER: "retailer-user"
+          POSTGRES_PASSWORD: "retailer-password"
       restart: always
       ports:
           - "5432:5432"
