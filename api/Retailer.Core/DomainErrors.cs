@@ -11,4 +11,7 @@ public static class DomainErrors
         new($"Invalid sale item quantity: {invalidQuantity}");
 
     public static ValidationError CannotCloseEmptySale() => new("Cannot close empty sale");
+
+    public static ValidationError CannotAddItemToSaleThatIsNotInProgress() =>
+        new("Cannot add item to a sale that is not in progress");
 }

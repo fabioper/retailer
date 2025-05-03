@@ -1,6 +1,6 @@
 ﻿using Retailer.Application.DTOs;
-using Retailer.Application.UseCases.CreateSale;
 using Retailer.Application.UseCases.GetSale;
+using Retailer.Application.UseCases.StartSale;
 
 namespace Retailer.Api.Controllers;
 
@@ -16,7 +16,7 @@ public class SalesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<SaleDTO>> CreateSale(CreateSaleHandler handler)
+    public async Task<ActionResult<SaleDTO>> StartSale(StartSaleHandler handler)
     {
         var result = await handler.Execute();
         return result.ToActionResult();

@@ -17,7 +17,11 @@ public class Sale : Entity<Guid>
 
     public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
 
-    public static Result<Sale> Create()
+    public bool IsInProgress => Status == SaleStatus.InProgress;
+
+    public bool IsCompleted => Status == SaleStatus.Completed;
+
+    public static Result<Sale> Start()
     {
         var sale = new Sale(SaleStatus.InProgress);
         return Result.Ok(sale);
@@ -25,6 +29,9 @@ public class Sale : Entity<Guid>
 
     public Result AddItem(Guid productId, decimal price, int quantity)
     {
+        if (!IsInProgress)
+            return Result.Fail(DomainErrors.CannotAddItemToSaleThatIsNotInProgress());
+
         var createItemResult = SaleItem.Create(productId, price, quantity);
 
         if (createItemResult.IsFailed)
@@ -42,6 +49,4 @@ public class Sale : Entity<Guid>
         Status = SaleStatus.Completed;
         return Result.Ok();
     }
-
-    public bool IsCompleted() => Status == SaleStatus.Completed;
 }

@@ -5,16 +5,16 @@ namespace Retailer.Core.Tests;
 public class SaleTests
 {
     [Test]
-    public void ShouldCreateSaleWithInProgressStatus()
+    public void ShouldStartSaleWithInProgressStatus()
     {
-        var sale = Sale.Create().Value;
-        Assert.That(sale.Status, Is.EqualTo(SaleStatus.InProgress));
+        var sale = Sale.Start().Value;
+        Assert.That(sale.IsInProgress);
     }
 
     [Test]
     public void ShouldAddSaleItemToSale()
     {
-        var sale = Sale.Create().Value;
+        var sale = Sale.Start().Value;
 
         var addItemResult = sale.AddItem(Guid.CreateVersion7(), 13, 1);
 
@@ -25,12 +25,30 @@ public class SaleTests
         });
     }
 
+    [Test]
+    public void ShouldNotAddItemToSaleThatIsNotInProgress()
+    {
+        var sale = Sale.Start().Value;
+        sale.AddItem(Guid.CreateVersion7(), 13, 1);
+
+        sale.Complete();
+
+        var addItemResult = sale.AddItem(Guid.CreateVersion7(), 13, 1);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(addItemResult.IsFailed);
+            Assert.That(sale.Items, Has.Count.EqualTo(1));
+            Assert.That(addItemResult.HasError(DomainErrors.CannotAddItemToSaleThatIsNotInProgress()));
+        });
+    }
+
     [TestCase(0)]
     [TestCase(-1)]
     [TestCase(-50.5)]
     public void ShoudlNotAddItemWithInvalidPrice(decimal invalidPrice)
     {
-        var sale = Sale.Create().Value;
+        var sale = Sale.Start().Value;
         var result = sale.AddItem(Guid.CreateVersion7(), invalidPrice, 1);
 
         Assert.Multiple(() =>
@@ -45,7 +63,7 @@ public class SaleTests
     [TestCase(-50)]
     public void ShoudlNotAddItemWithInvalidQuantity(int invalidQuantity)
     {
-        var sale = Sale.Create().Value;
+        var sale = Sale.Start().Value;
         var result = sale.AddItem(Guid.CreateVersion7(), 13, invalidQuantity);
 
         Assert.Multiple(() =>
@@ -58,7 +76,7 @@ public class SaleTests
     [Test]
     public void ShouldUpdateTotalWhenItemIsAdded()
     {
-        var sale = Sale.Create().Value;
+        var sale = Sale.Start().Value;
 
         sale.AddItem(Guid.CreateVersion7(), 5, 2);
         sale.AddItem(Guid.CreateVersion7(), 15, 3);
@@ -71,7 +89,7 @@ public class SaleTests
     [Test]
     public void ShouldCompleteSale()
     {
-        var sale = Sale.Create().Value;
+        var sale = Sale.Start().Value;
 
         sale.AddItem(Guid.CreateVersion7(), 5, 2);
         sale.AddItem(Guid.CreateVersion7(), 15, 3);
@@ -81,14 +99,14 @@ public class SaleTests
         Assert.Multiple(() =>
         {
             Assert.That(completeSaleResult.IsSuccess);
-            Assert.That(sale.IsCompleted());
+            Assert.That(sale.IsCompleted);
         });
     }
 
     [Test]
     public void ShouldNotCompleteSaleWithNoItems()
     {
-        var sale = Sale.Create().Value;
+        var sale = Sale.Start().Value;
 
         var completeSaleResult = sale.Complete();
 
@@ -96,7 +114,7 @@ public class SaleTests
         {
             Assert.That(completeSaleResult.IsSuccess, Is.False);
             Assert.That(completeSaleResult.HasError(DomainErrors.CannotCloseEmptySale()));
-            Assert.That(!sale.IsCompleted());
+            Assert.That(!sale.IsCompleted);
         });
     }
 }
