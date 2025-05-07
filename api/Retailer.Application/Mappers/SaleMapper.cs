@@ -5,11 +5,19 @@ namespace Retailer.Application.Mappers;
 
 public static class SaleMapper
 {
-    public static SaleDTO MapSaleToDto(Sale sale) => new(
-        sale.Id,
-        sale.Items.Select(MapSaleItemToDto).ToList(),
-        sale.Total,
-        sale.Status.ToString());
+    public static SaleDTO MapSaleToDto(Sale sale)
+    {
+        return new SaleDTO(
+            Id: sale.Id,
+            Items: sale.Items.Select(MapSaleItemToDto).ToList(),
+            Total: sale.Total,
+            Subtotal: sale.Subtotal,
+            TotalDiscounts: sale.TotalDiscounts,
+            Discounts: sale.AppliedDiscounts.Select(MapDiscountToDto).ToList(),
+            Status: sale.Status.ToString());
+    }
+
+    private static DiscountDTO MapDiscountToDto(Discount d) => new(d.PolicyId, d.Total);
 
     private static SaleItemDTO MapSaleItemToDto(SaleItem item) => new(item.Id, item.Price, item.Quantity);
 }
