@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Retailer.Core.Products;
 using Retailer.Core.Sales;
 
 namespace Retailer.Infrastructure.Persistence.Configurations;
@@ -19,5 +20,10 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
         builder.Property(x => x.Price).IsRequired();
 
         builder.Property(x => x.Quantity).IsRequired();
+
+        builder.HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(x => x.ProductId)
+            .IsRequired();
     }
 }

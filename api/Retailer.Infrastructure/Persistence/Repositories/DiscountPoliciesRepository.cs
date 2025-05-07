@@ -3,7 +3,7 @@ using Retailer.Core.DiscountPolicies;
 
 namespace Retailer.Infrastructure.Persistence.Repositories;
 
-public class DiscountPoliciesRepository(DbContext context) : IDiscountPoliciesRepository
+public class DiscountPoliciesRepository(AppDbContext context) : IDiscountPoliciesRepository
 {
     private DbSet<DiscountPolicy> DiscountPolicies => context.Set<DiscountPolicy>();
 

@@ -3,7 +3,7 @@ using Retailer.Core.Sales;
 
 namespace Retailer.Infrastructure.Persistence.Repositories;
 
-public class SalesRepository(DbContext context) : ISalesRepository
+public class SalesRepository(AppDbContext context) : ISalesRepository
 {
     private DbSet<Sale> Sales => context.Set<Sale>();
 
