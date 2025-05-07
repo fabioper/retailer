@@ -23,6 +23,8 @@ public class SalesConfiguration : IEntityTypeConfiguration<Sale>
             .HasForeignKey("SaleId")
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.OwnsMany(x => x.AppliedDiscounts, appliedDiscount => appliedDiscount.ToTable("AppliedDiscounts"));
+
         builder.Navigation(x => x.Items).AutoInclude();
     }
 }

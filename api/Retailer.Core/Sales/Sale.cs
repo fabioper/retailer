@@ -1,9 +1,11 @@
 ﻿using Retailer.Common;
+using Retailer.Core.DiscountPolicies;
 
 namespace Retailer.Core.Sales;
 
 public class Sale : Entity<Guid>
 {
+    private readonly IList<Discount> _appliedDiscounts = [];
     private readonly IList<SaleItem> _items = [];
 
     private Sale(SaleStatus status) : base(Guid.CreateVersion7())
@@ -11,11 +13,17 @@ public class Sale : Entity<Guid>
         Status = status;
     }
 
-    public decimal Total => _items.Sum(item => item.Price * item.Quantity);
-
     public SaleStatus Status { get; private set; }
 
+    public decimal Total => _items.Sum(item => item.Price * item.Quantity);
+
+    public decimal TotalDiscounts => _appliedDiscounts.Sum(d => d.Total);
+
+    public decimal Subtotal => Total - TotalDiscounts;
+
     public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
+
+    public IReadOnlyCollection<Discount> AppliedDiscounts => _appliedDiscounts.AsReadOnly();
 
     public bool IsInProgress => Status == SaleStatus.InProgress;
 
@@ -48,5 +56,15 @@ public class Sale : Entity<Guid>
 
         Status = SaleStatus.Completed;
         return Result.Ok();
+    }
+
+    public void ApplyDiscountPolicies(IEnumerable<DiscountPolicy> policies)
+    {
+        foreach (var policy in policies)
+        {
+            var discount = policy.CalculateDiscountOf(this);
+            if (discount > 0)
+                _appliedDiscounts.Add(new Discount(policy.Id, discount));
+        }
     }
 }

@@ -4,12 +4,14 @@ namespace Retailer.Core.Sales;
 
 public class SaleItem : Entity<Guid>
 {
-    private SaleItem(Guid id, decimal price, int quantity) : base(id)
+    private SaleItem(Guid productId, decimal price, int quantity) : base(Guid.CreateVersion7())
     {
+        ProductId = productId;
         Price = price;
         Quantity = quantity;
     }
 
+    public Guid ProductId { get; private set; }
     public decimal Price { get; private set; }
     public int Quantity { get; private set; }
 

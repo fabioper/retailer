@@ -1,3 +1,5 @@
+using Retailer.Core.DiscountPolicies.Conditions;
+using Retailer.Core.DiscountPolicies.Policies;
 using Retailer.Core.Sales;
 
 namespace Retailer.Core.Tests;
@@ -115,6 +117,28 @@ public class SaleTests
             Assert.That(completeSaleResult.IsSuccess, Is.False);
             Assert.That(completeSaleResult.HasError(DomainErrors.CannotCloseEmptySale()));
             Assert.That(!sale.IsCompleted);
+        });
+    }
+
+    [Test]
+    public void ShouldApplyDiscountPolicy()
+    {
+        var sale = Sale.Start().Value;
+
+        sale.AddItem(Guid.CreateVersion7(), 15, 1);
+        sale.AddItem(Guid.CreateVersion7(), 5, 3);
+        sale.AddItem(Guid.CreateVersion7(), 30, 1);
+
+        var discountPolicy = new PercentageDiscountPolicy("TestPolicy", 10, true);
+
+        discountPolicy.AddCondition(new MinimumTotalDiscountCondition(50));
+
+        sale.ApplyDiscountPolicies([discountPolicy]);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sale.TotalDiscounts, Is.EqualTo(6));
+            Assert.That(sale.Subtotal, Is.EqualTo(54));
         });
     }
 }
