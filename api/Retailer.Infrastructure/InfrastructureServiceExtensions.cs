@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Retailer.Core.DiscountPolicies;
+using Retailer.Core.Products;
 using Retailer.Core.Sales;
 using Retailer.Infrastructure.Persistence;
 using Retailer.Infrastructure.Persistence.Repositories;
@@ -19,5 +20,6 @@ public static class InfrastructureServiceExtensions
 
         services.AddScoped<ISalesRepository, SalesRepository>();
         services.AddScoped<IDiscountPoliciesRepository, DiscountPoliciesRepository>();
+        services.AddScoped<IProductsRepository, ProductsRepository>();
     }
 }

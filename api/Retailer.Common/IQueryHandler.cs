@@ -7,5 +7,5 @@ public interface IQueryHandler<in TQuery, TResult>
 
 public interface IQueryHandler<TResult>
 {
-    Task<Result<TResult>> Execute();
+    Task<Result<TResult>> Query();
 }

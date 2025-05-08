@@ -16,6 +16,8 @@ public class StartSaleHandler(ISalesRepository repository) : IUseCase<SaleDTO>
 
         var sale = await repository.AddAsync(startSaleResult.Value);
 
+        await repository.SaveChangesAsync();
+
         return Result.Ok(MapSaleToDto(sale));
     }
 }

@@ -18,7 +18,7 @@ public class SaleTests
     {
         var sale = Sale.Start().Value;
 
-        var addItemResult = sale.AddItem(Guid.CreateVersion7(), 13, 1);
+        var addItemResult = sale.AddItem(productId: Guid.CreateVersion7(), price: 13, quantity: 1);
 
         Assert.Multiple(() =>
         {
@@ -31,11 +31,11 @@ public class SaleTests
     public void ShouldNotAddItemToSaleThatIsNotInProgress()
     {
         var sale = Sale.Start().Value;
-        sale.AddItem(Guid.CreateVersion7(), 13, 1);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 13, quantity: 1);
 
         sale.Complete();
 
-        var addItemResult = sale.AddItem(Guid.CreateVersion7(), 13, 1);
+        var addItemResult = sale.AddItem(productId: Guid.CreateVersion7(), price: 13, quantity: 1);
 
         Assert.Multiple(() =>
         {
@@ -51,7 +51,7 @@ public class SaleTests
     public void ShoudlNotAddItemWithInvalidPrice(decimal invalidPrice)
     {
         var sale = Sale.Start().Value;
-        var result = sale.AddItem(Guid.CreateVersion7(), invalidPrice, 1);
+        var result = sale.AddItem(productId: Guid.CreateVersion7(), price: invalidPrice, quantity: 1);
 
         Assert.Multiple(() =>
         {
@@ -66,7 +66,7 @@ public class SaleTests
     public void ShoudlNotAddItemWithInvalidQuantity(int invalidQuantity)
     {
         var sale = Sale.Start().Value;
-        var result = sale.AddItem(Guid.CreateVersion7(), 13, invalidQuantity);
+        var result = sale.AddItem(productId: Guid.CreateVersion7(), price: 13, quantity: invalidQuantity);
 
         Assert.Multiple(() =>
         {
@@ -80,10 +80,10 @@ public class SaleTests
     {
         var sale = Sale.Start().Value;
 
-        sale.AddItem(Guid.CreateVersion7(), 5, 2);
-        sale.AddItem(Guid.CreateVersion7(), 15, 3);
-        sale.AddItem(Guid.CreateVersion7(), 300, 1);
-        sale.AddItem(Guid.CreateVersion7(), 12, 2);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 5, quantity: 2);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 15, quantity: 3);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 300, quantity: 1);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 12, quantity: 2);
 
         Assert.That(sale.Total, Is.EqualTo(379));
     }
@@ -93,8 +93,8 @@ public class SaleTests
     {
         var sale = Sale.Start().Value;
 
-        sale.AddItem(Guid.CreateVersion7(), 5, 2);
-        sale.AddItem(Guid.CreateVersion7(), 15, 3);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 5, quantity: 2);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 15, quantity: 3);
 
         var completeSaleResult = sale.Complete();
 
@@ -125,9 +125,9 @@ public class SaleTests
     {
         var sale = Sale.Start().Value;
 
-        sale.AddItem(Guid.CreateVersion7(), 15, 1);
-        sale.AddItem(Guid.CreateVersion7(), 5, 3);
-        sale.AddItem(Guid.CreateVersion7(), 30, 1);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 15, quantity: 1);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 5, quantity: 3);
+        sale.AddItem(productId: Guid.CreateVersion7(), price: 30, quantity: 1);
 
         var discountPolicy = new PercentageDiscountPolicy("TestPolicy", 10, true);
 

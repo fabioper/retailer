@@ -5,7 +5,7 @@ namespace Retailer.Infrastructure.Persistence.Repositories;
 
 public class SalesRepository(AppDbContext context) : ISalesRepository
 {
-    private DbSet<Sale> Sales => context.Set<Sale>();
+    private DbSet<Sale> Sales => context.Sales;
 
     public async Task<Sale> AddAsync(Sale sale)
     {

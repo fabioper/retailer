@@ -13,10 +13,7 @@ public abstract class DiscountPolicy(string name, bool isActive) : Entity<Guid>(
 
     public void AddCondition(DiscountCondition condition) => _conditions.Add(condition);
 
-    public bool IsApplicable(Sale sale)
-    {
-        return IsActive && _conditions.All(c => c.IsSatisfiedBy(sale));
-    }
+    public bool IsApplicable(Sale sale) => IsActive && _conditions.All(c => c.IsSatisfiedBy(sale));
 
     public abstract decimal CalculateDiscountOf(Sale sale);
 }

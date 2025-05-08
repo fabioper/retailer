@@ -8,5 +8,3 @@ public record SaleDTO(
     decimal TotalDiscounts,
     List<DiscountDTO> Discounts,
     string Status);
-
-public record DiscountDTO(Guid PolicyId, decimal Total);
