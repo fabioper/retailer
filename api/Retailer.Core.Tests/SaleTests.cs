@@ -141,4 +141,16 @@ public class SaleTests
             Assert.That(sale.Subtotal, Is.EqualTo(54));
         });
     }
+
+    [Test]
+    public void ShouldIncreaseQuantityWhenAddingItemThatAlreadyExists()
+    {
+        var sale = Sale.Start().Value;
+        var productId = Guid.CreateVersion7();
+        sale.AddItem(productId, price: 15, quantity: 3);
+        sale.AddItem(productId, price: 15, quantity: 1);
+
+        Assert.That(sale.Items, Has.Count.EqualTo(1));
+        Assert.That(sale.Items.First().Quantity, Is.EqualTo(4));
+    }
 }

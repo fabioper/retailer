@@ -25,4 +25,13 @@ public class SaleItem : Entity<Guid>
 
         return Result.Ok(new SaleItem(productId, price, quantity));
     }
+
+    public Result IncreaseQuantityBy(int quantity)
+    {
+        if (quantity <= 0) return Result.Fail(DomainErrors.InvalidQuantityForSaleItem(quantity));
+
+        Quantity += quantity;
+
+        return Result.Ok();
+    }
 }

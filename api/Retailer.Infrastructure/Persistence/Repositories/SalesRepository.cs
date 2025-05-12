@@ -15,7 +15,7 @@ public class SalesRepository(AppDbContext context) : ISalesRepository
 
     public async Task<Sale?> GetByIdAsync(Guid id)
     {
-        return await Sales.AsNoTracking().FirstOrDefaultAsync(sale => sale.Id == id);
+        return await Sales.FirstOrDefaultAsync(sale => sale.Id == id);
     }
 
     public async Task SaveChangesAsync() => await context.SaveChangesAsync();

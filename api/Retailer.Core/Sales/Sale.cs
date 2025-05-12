@@ -5,7 +5,7 @@ namespace Retailer.Core.Sales;
 
 public class Sale : Entity<Guid>
 {
-    private readonly IList<Discount> _appliedDiscounts = [];
+    private readonly IList<AppliedDiscount> _appliedDiscounts = [];
     private readonly IList<SaleItem> _items = [];
 
     private Sale(SaleStatus status) : base(Guid.CreateVersion7())
@@ -23,7 +23,7 @@ public class Sale : Entity<Guid>
 
     public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
 
-    public IReadOnlyCollection<Discount> AppliedDiscounts => _appliedDiscounts.AsReadOnly();
+    public IReadOnlyCollection<AppliedDiscount> AppliedDiscounts => _appliedDiscounts.AsReadOnly();
 
     public bool IsInProgress => Status == SaleStatus.InProgress;
 
@@ -39,6 +39,12 @@ public class Sale : Entity<Guid>
     {
         if (!IsInProgress)
             return Result.Fail(DomainErrors.CannotAddItemToSaleThatIsNotInProgress());
+
+        if (_items.Any(item => item.ProductId == productId))
+        {
+            var item = _items.First(item => item.ProductId == productId);
+            return item.IncreaseQuantityBy(quantity);
+        }
 
         var createItemResult = SaleItem.Create(productId, price, quantity);
 
@@ -60,11 +66,11 @@ public class Sale : Entity<Guid>
 
     public void ApplyDiscountPolicies(IEnumerable<DiscountPolicy> policies)
     {
-        foreach (var policy in policies)
+        foreach (var policy in policies.Where(policy => policy.IsApplicable(this)))
         {
             var discount = policy.CalculateDiscountOf(this);
             if (discount > 0)
-                _appliedDiscounts.Add(new Discount(policy.Id, discount));
+                _appliedDiscounts.Add(new AppliedDiscount(policy.Id, discount));
         }
     }
 }

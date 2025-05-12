@@ -5,4 +5,5 @@ public interface IProductsRepository
     Task<Product> AddProductAsync(Product value);
     Task SaveChangesAsync();
     Task<IEnumerable<Product>> GetAllAsync();
+    Task<Product?> GetByIdAsync(Guid productId);
 }

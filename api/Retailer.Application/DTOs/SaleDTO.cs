@@ -6,5 +6,5 @@ public record SaleDTO(
     decimal Total,
     decimal Subtotal,
     decimal TotalDiscounts,
-    List<DiscountDTO> Discounts,
+    List<AppliedDiscountDTO> AppliedDiscounts,
     string Status);

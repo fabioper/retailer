@@ -17,4 +17,7 @@ public class ProductsRepository(AppDbContext context) : IProductsRepository
 
     public async Task<IEnumerable<Product>> GetAllAsync()
         => await Products.AsNoTracking().ToListAsync();
+
+    public async Task<Product?> GetByIdAsync(Guid productId)
+        => await Products.FirstOrDefaultAsync(product => product.Id == productId);
 }

@@ -1,4 +1,6 @@
-﻿using Retailer.Application.DTOs;
+﻿using Retailer.Api.Models;
+using Retailer.Application.DTOs;
+using Retailer.Application.UseCases.AddItemToSale;
 using Retailer.Application.UseCases.GetSale;
 using Retailer.Application.UseCases.StartSale;
 
@@ -19,6 +21,14 @@ public class SalesController : ControllerBase
     public async Task<ActionResult<SaleDTO>> StartSale([FromServices] StartSaleHandler handler)
     {
         var result = await handler.Execute();
+        return result.ToActionResult();
+    }
+
+    [HttpPost("{saleId:guid}/items")]
+    public async Task<ActionResult<SaleDTO>> AddItemToSale(Guid saleId,
+        [FromBody] AddItemToSaleRequest request, [FromServices] AddItemToSaleHandler handler)
+    {
+        var result = await handler.Execute(new AddItemToSaleCommand(saleId, request.ProductId, request.Quantity));
         return result.ToActionResult();
     }
 }

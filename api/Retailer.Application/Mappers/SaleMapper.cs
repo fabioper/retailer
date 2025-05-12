@@ -13,11 +13,11 @@ public static class SaleMapper
             Total: sale.Total,
             Subtotal: sale.Subtotal,
             TotalDiscounts: sale.TotalDiscounts,
-            Discounts: sale.AppliedDiscounts.Select(MapDiscountToDto).ToList(),
+            AppliedDiscounts: sale.AppliedDiscounts.Select(MapDiscountToDto).ToList(),
             Status: sale.Status.ToString());
     }
 
-    private static DiscountDTO MapDiscountToDto(Discount d) => new(d.PolicyId, d.Total);
+    private static AppliedDiscountDTO MapDiscountToDto(AppliedDiscount d) => new(d.PolicyId, d.Total);
 
     private static SaleItemDTO MapSaleItemToDto(SaleItem item) => new(item.Id, item.Price, item.Quantity);
 }
