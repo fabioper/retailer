@@ -15,4 +15,12 @@ public class DiscountPoliciesRepository(AppDbContext context) : IDiscountPolicie
 
         return discountPolicies;
     }
+
+    public async Task<DiscountPolicy> AddAsync(DiscountPolicy discountPolicy)
+    {
+        var result = await DiscountPolicies.AddAsync(discountPolicy);
+        return result.Entity;
+    }
+
+    public async Task SaveChangesAsync() => await context.SaveChangesAsync();
 }
